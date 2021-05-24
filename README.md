@@ -17,11 +17,12 @@ import os
 import warnings
 ```
 ```R
-library("openxlsx", "tidyverse", "survminer", "ComplexHeatmap", "RColorBrewer", "ggbeeswarm", "MASS",
-"grid", "gtable", "gsubfn", "proto", "circlize", "xlsx", "RColorBrewer", "ComplexHeatmap", "grid",
-"data.table", "dplyr", "survminer", "ggpubr", "magrittr", "survival", "openxlsx", "reshape2", "reshape",
-"copynumber", "BiocGenerics", "parallel", "ggplot2", "stats", "graphics", "grDevices", "utils", "datasets", 
-"methods", "base", "tidyr","tidyverse","spatstat")
+library("openxlsx", "tidyverse", "survminer", "ComplexHeatmap", "RColorBrewer",
+"ggbeeswarm", "MASS","grid", "gtable", "gsubfn", "proto", "circlize", "xlsx", 
+"RColorBrewer", "ComplexHeatmap", "grid","data.table", "dplyr", "survminer", 
+"ggpubr", "magrittr", "survival", "openxlsx", "reshape2", "reshape","copynumber",
+"BiocGenerics", "parallel", "ggplot2", "stats", "graphics", "grDevices", "utils", 
+"datasets", "methods", "base", "tidyr","tidyverse","spatstat")
 ```
 ## Versions
 ### R 4.0.5
