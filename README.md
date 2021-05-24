@@ -1,4 +1,4 @@
-# Karyotype-alteration-in-Colorectal-cancer-metastasis <img align="right" width="150" height="100" src=/images/Barts.jpg>
+# Karyotype alteration in Colorectal cancer metastasis <img align="right" width="150" height="100" src=/images/Barts.jpg>
 
 
 
