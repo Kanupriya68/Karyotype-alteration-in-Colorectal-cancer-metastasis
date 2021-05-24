@@ -1,4 +1,6 @@
-# Karyotype-alteration-in-Colorectal-cancer-metastasis ![GitHub Logo](/images/Barts.jpg)
+# Karyotype-alteration-in-Colorectal-cancer-metastasis <img align="right" width="150" height="100" src=/images/Barts.jpg>
+
+
 
 The aim of this project is to determine if there are any changes between the karyotype of primary tumours versus their matched metastatic tumours.
 ## Description
