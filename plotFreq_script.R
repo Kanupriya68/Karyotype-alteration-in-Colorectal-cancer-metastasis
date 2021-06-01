@@ -56,6 +56,8 @@ df <- na.omit(df)
 #Remove duplicated rows
 df <- df[!duplicated(df),]
 
+#write.csv(df, file = "C:/Research/Research_project/tcga/site.csv", row.names = FALSE)
+
 #Select necessary column to run pcf
 pcf_df <- subset(df, select = c(1:10))
 pcf_df <- subset(pcf_df, select = -c(8,9))
@@ -63,11 +65,17 @@ pcf_df <- subset(pcf_df, select = -c(8,9))
 #Create df for Liver
 Liver_df <- pcf_df %>% filter(`Biopsy Location` == "Liver")
 
+
+
 #Create df for Lung
 Lung_df <- pcf_df %>% filter(`Biopsy Location` == "Lung")
 
+
+
 #Create df for Colon
 Colon_df <- pcf_df %>% filter(`Biopsy Location` == "Colon")
+
+
 
 #write.csv(Colon_df,file = "C:/Research/Research_project/tcga/colon.csv",row.names = FALSE)
 
@@ -102,8 +110,6 @@ Hartwig_Liver <- Hartwig_Liver[-1,]
 append <- subset(Hartwig_data, select= c(3,4,5))
 Hartwig_Liver <- cbind(append,Hartwig_Liver)
 
-
-
 #write.csv(Hartwig_Liver,file = "C:/Research/Research_project/tcga/HartwigLiver.csv", row.names = FALSE)
 
 #write.csv(Hartwig_Lung,file = "C:/Research/Research_project/tcga/HartwigLung.csv", row.names = FALSE)
@@ -118,7 +124,44 @@ Hartwig_Liver_pcf <- pcf(Hartwig_Liver, normalize = FALSE)
 
 #Plot frequency of Hartwig liver df
 
-plotFreq(Hartwig_Liver_pcf,thres.gain = c(2.5,5), thres.loss = 1.5, main="Frequency Plot of Hartwig : Phenotype- Liver , n=327")
+plotFreq(Hartwig_Liver_pcf,thres.gain = c(2,5), thres.loss = 2, main="Frequency Plot of Hartwig : Phenotype- Liver , n=327")
+
+#WGD correction
+wgd_HartwigLiver <- read.csv("C:/Research/Research_project/Hartwig_WGD_Samples_Liver_Lung.csv",sep = ";",header = TRUE)
+
+wgdLiversubset <- Hartwig_Liver[ ,wgd_HartwigLiver$LiverWGD_SampleIDs]
+
+wgdcorrectedLiver <- Hartwig_Liver
+
+meanHartwig_Liver <- data.frame(sampleID=character(),meanploidy=numeric())
+
+#Calculate mean ploidy for Hartwig Liver
+for (i in colnames(Hartwig_Liver[3:329])){
+  average <- mean(Hartwig_Liver[[i]])
+  df_newmean <- data.frame(i,average)
+  names(df_newmean) <- c("sampleID","meanploidy")
+  meanHartwig_Liver <- rbind(meanHartwig_Liver,df_newmean)
+}
+
+#Reduce whole genome doubled copy number values
+for (i in wgd_HartwigLiver$LiverWGD_SampleIDs){
+  as <- meanHartwig_Liver[meanHartwig_Liver$sampleID == i,]
+  mean_ploidy <- as[[2]]
+  if (mean_ploidy > 3 & mean_ploidy < 3.5){
+    wgdcorrectedLiver[i] <- wgdcorrectedLiver[i]-1
+  }
+  else if (mean_ploidy >= 3.5){
+    wgdcorrectedLiver[i] <- wgdcorrectedLiver[i]-2
+  }
+  
+}
+
+#Rerun pcf on wgd corrected df
+wgdLiver_pcf <- pcf(wgdcorrectedLiver,normalize = FALSE)
+
+plotFreq(wgdLiver_pcf,thres.gain = 2,thres.loss = 2,main="Frequency Plot of Hartwig : Liver, n=327")
+
+
 
 #######################
 ####Hartwig_Lung#######
@@ -145,7 +188,48 @@ Hartwig_Lung <- mutate_all(Hartwig_Lung_na, function(x) as.numeric(as.character(
 #Run pcf to get segments
 Hartwig_Lung_pcf <- pcf(Hartwig_Lung, normalize = FALSE)
 #Plot segments in frequency plot to visualize gain and loss percentage
-plotFreq(Hartwig_Lung_pcf,thres.gain = c(2.5,5), thres.loss = 1.5, main="Frequency Plot of Hartwig : Phenotype- Lung , n=27")
+plotFreq(Hartwig_Lung_pcf,thres.gain = c(2,5), thres.loss = 2, main="Frequency Plot of Hartwig : Phenotype- Lung , n=27")
+
+#WGD correction
+#wgd_HartwigLung <- read.csv("C:/Research/Research_project/Hartwig_WGD_Samples_Liver_Lung.csv",sep = ";",header = TRUE)
+wgdHartwig_Lung <- c("CPCT02010474T","CPCT02040102T","CPCT02040188T","CPCT02040226T","CPCT02040264T","CPCT02050184T","CPCT02060259T","CPCT02070232T","CPCT02080084T","CPCT02160038T","CPCT02190007T","CPCT02210064T","CPCT02220009T","CPCT02330036T","CPCT02330043T","CPCT02380015T","CPCT02380016T","DRUP01050025T","DRUP01050031T","DRUP01330008T")
+wgdLungsubset <- Hartwig_Lung[ ,wgdHartwig_Lung]
+
+wgdcorrecteddf <- Hartwig_Lung
+
+meanHartwig_Lung <- data.frame(sampleID=character(),meanploidy=numeric())
+
+for (i in colnames(Hartwig_Lung[3:29])){
+  average <- mean(Hartwig_Lung[[i]])
+  df_newmean <- data.frame(i,average)
+  names(df_newmean) <- c("sampleID","meanploidy")
+  meanHartwig_Lung <- rbind(meanHartwig_Lung,df_newmean)
+}
+
+wgdcorrectedlung <- Hartwig_Lung
+
+for (i in wgdHartwig_Lung){
+  as <- meanHartwig_Lung[meanHartwig_Lung$sampleID == i,]
+  mean_ploidy <- as[[2]]
+  if (mean_ploidy > 3 & mean_ploidy < 3.5){
+    wgdcorrectedlung[i] <- wgdcorrectedlung[i]-1
+  }
+  else if (mean_ploidy >= 3.5){
+    wgdcorrectedlung[i] <- wgdcorrectedlung[i]-2
+  }
+  
+}
+
+#Rerun pcf on wgd corrected df
+wgdLung_pcf <- pcf(wgdcorrectedlung,normalize = FALSE)
+
+plotFreq(wgdLung_pcf,thres.gain = 2,thres.loss = 2,main="Frequency Plot of Hartwig : Lung, n=27")
+
+
+
+
+
+
 
 ############################
 ########TCGA_Colon##########
@@ -159,14 +243,38 @@ Colon_binned <- subset(Colon_binned, select = -c(1,2,5))
 #Replace NAs with diploid
 Colon_na <- mutate(Colon_binned, across(everything(), ~replace_na(.x, 2)))
 Colon_pcf <- mutate_all(Colon_na, function(x) as.numeric(as.character(x)))
-Colon_pcf$chromosome <- as.character(Colon_pcf$chromosome)
 
 #Run pcf 
 ColonFreq <- pcf(Colon_pcf, normalize = FALSE)
 
 #Plot frequency 
-plotFreq(ColonFreq,thres.gain = c(2.5,5),thres.loss = 1.5, main = "Frequency Plot of TCGA : Phenotype-Colon, n=290")
-         
+plotFreq(ColonFreq,thres.gain = c(2,5),thres.loss = 2, main = "Frequency Plot of TCGA : Phenotype-Colon, n=290")
+ 
+#WGD correction
+wgd_Colon <- read.csv("C:/Research/Research_project/tcga/wgdTCGAColon.csv",sep = ",",header = TRUE)
+wgd_Colon$Sample <- gsub(wgd_Colon$Sample,pattern = "-",replacement = ".")
+wgdColonsubset <- Colon_pcf[ ,wgd_Colon$Sample]
+#chromStart <- Colon_pcf[,c(1,2)]
+#wgdColon_pcf <- cbind(chromStart,wgdColonsubset)
+wgdcorrecteddf <- Colon_pcf
+for (i in wgd_Colon$Sample){
+  as <- wgd_Colon[wgd_Colon$Sample == i,]
+  mean_ploidy <- as[[2]]
+  if (mean_ploidy > 3 & mean_ploidy < 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-1
+  }
+  else if (mean_ploidy >= 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-2
+  }
+  
+}
+
+#Rerun pcf on wgd corrected df
+wgdColon_pcf <- pcf(wgdcorrecteddf,normalize = FALSE)
+
+plotFreq(wgdColon_pcf,thres.gain = 2,thres.loss = 2,main="Frequency Plot of TCGA : Colon, n=290")
+
+
 #################################
 #########TCGA_Liver##############
 #################################
@@ -185,8 +293,30 @@ LiverFreq <- pcf(Liver_pcf, normalize = FALSE)
 
 #Plot frequency
 
-plotFreq(LiverFreq,thres.gain = c(2.5,5),thres.loss = 1.5, main = "Frequency Plot of TCGA : Phenotype-Liver, n=362")
- 
+plotFreq(LiverFreq,thres.gain = c(2,5),thres.loss = 2, main = "Frequency Plot of TCGA : Phenotype-Liver, n=362")
+
+#WGD correction
+wgd_Liver <- read.csv("C:/Research/Research_project/tcga/wgdTCGALiver.csv",sep = ",",header = TRUE)
+wgd_Liver$Sample <- gsub(wgd_Liver$Sample,pattern = "-",replacement = ".")
+wgdLiversubset <- Liver_pcf[ ,wgd_Liver$Sample]
+wgdcorrecteddf <- Liver_pcf
+for (i in wgd_Liver$Sample){
+  as <- wgd_Liver[wgd_Liver$Sample == i,]
+  mean_ploidy <- as[[2]]
+  if (mean_ploidy > 3 & mean_ploidy < 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-1
+  }
+  else if (mean_ploidy >= 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-2
+  }
+  
+}
+
+#Rerun pcf on wgd corrected df
+wgdLiver_pcf <- pcf(wgdcorrecteddf,normalize = FALSE)
+
+plotFreq(wgdLiver_pcf,thres.gain = 2,thres.loss = 2,main="Frequency Plot of TCGA : Liver, n=362")
+
 ####################################
 #############TCGA_Lung##############
 ####################################
@@ -208,10 +338,28 @@ library(spatstat)
 LungFreq <- pcf(Lung_pcf, normalize = FALSE)
 
 #Plot frequency 
-plotFreq(LungFreq,thres.gain = c(2.5,5),thres.loss = 1.5, main = "Frequency Plot of TCGA : Phenotype-Lung, n=950")
+plotFreq(LungFreq, thres.gain = c(2,5),thres.loss = 2, main = "Frequency Plot of TCGA : Phenotype-Lung, n=950")
 
-#par(fig=c(0,0.8,0,0.8), new=TRUE)
+#WGD correction
+wgd_Lung <- read.csv("C:/Research/Research_project/tcga/wgdTCGALung.csv",sep = ",",header = TRUE)
+wgd_Lung$Sample <- gsub(wgd_Lung$Sample,pattern = "-",replacement = ".")
+wgdLungsubset <- Lung_pcf[ ,wgd_Lung$Sample]
 
+wgdcorrecteddf <- Lung_pcf
 
+for (i in wgd_Lung$Sample){
+  as <- wgd_Lung[wgd_Lung$Sample == i,]
+  mean_ploidy <- as[[2]]
+  if (mean_ploidy > 3 & mean_ploidy < 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-1
+  }
+  else if (mean_ploidy >= 3.5){
+    wgdcorrecteddf[i] <- wgdcorrecteddf[i]-2
+  }
+  
+}
 
+#Rerun pcf on wgd corrected df
+wgdLung_pcf <- pcf(wgdcorrecteddf,normalize = FALSE)
 
+plotFreq(wgdLung_pcf,thres.gain = 2,thres.loss = 2,main="Frequency Plot of TCGA : Lung, n=950")
