@@ -6,9 +6,9 @@ TCGA_data <- read.csv("C:/Research/Research_project/TCGA_data/TCGA_mastercalls.a
 results <- read.csv("C:/Research/Research_project/TCGA_data/results.csv",sep = ",",header = TRUE)
 
 #Read all p-values of 6 combinations of contingency tables
-we <- read.csv("C:/Research/Research_project/fishertestdf/allPvalues.csv",sep = ";",header = TRUE)
+we <- read.csv("C:/Research/Research_project/fishertestdf/FDRsigBins.csv",sep = ";",header = TRUE)
 #Change column name 'chromosome' to 'chr'
-colnames(we)[2] <- "chr"
+colnames(we)[6] <- "chr"
 
 #Change gene annotation variable name to gene_annotation
 gene_annotation <- results
@@ -33,17 +33,17 @@ for (i in 1:nrow(we)) {
 write.csv(we,file = "C:/Research/Research_project/fishertestdf/gene_annotation.csv")
 
 #Filter gene_annotation dataframe as per significant bins
-significantBins <- we %>% filter(gainloss_fisherPvalue < 0.05|cnLOHloss_fisherPvalue <0.05|
-                      cnLOHgain_fisherPvalue < 0.05|cnLOHamp_fisherPvalue < 0.05|
-                      amploss_fisherPvalue < 0.05 | ampgain_fisherPvalue < 0.05)
+#significantBins <- we %>% filter(gainloss_fisherPvalue < 0.05|cnLOHloss_fisherPvalue <0.05|
+                      #cnLOHgain_fisherPvalue < 0.05|cnLOHamp_fisherPvalue < 0.05|
+                      #amploss_fisherPvalue < 0.05 | ampgain_fisherPvalue < 0.05)
   
 #Subset significantBins dataframe to have only bin locations and genes
-geneSet <- subset(significantBins, select = c(1,2,3,4,17))
+geneSet <- subset(we, select = c(1,4,5,6,7))
 
 #Create csv file with all significant bins of all 6 combinations of contingency tables
-write.csv(significantBins,file = "C:/Research/Research_project/fishertestdf/significant_bins.csv")
+#write.csv(significantBins,file = "C:/Research/Research_project/fishertestdf/significant_bins.csv")
 #Create csv file of geneSet dataframe
-write.csv(geneSet,file = "C:/Research/Research_project/fishertestdf/geneSet.csv")
+#write.csv(geneSet,file = "C:/Research/Research_project/fishertestdf/geneSet.csv")
 
 #Split geneSet daraframe gene name wise in each row
 splitGenes <- separate_rows(geneSet,gene,convert = TRUE)
