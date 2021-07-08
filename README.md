@@ -2,7 +2,8 @@
 
 
 
-The aim of this project is to determine if there are any changes between the karyotype of primary tumours versus their matched metastatic tumours.
+The aim is to determine if the seeding of a primary colorectal cancer to a distant metastatic site results in specific karyotype adjustments that lead to adaptation to a new tissue-specific microenvironment.
+
 ## Description
 Cancer cells carry different types of mutations associated with cell proliferation and cell longevity. 
 Certain alterations only affect one or a few base pairs. Others, known as copy number alterations (CNAs), involve larger portions of the genome that can either be deleted or gained. 
