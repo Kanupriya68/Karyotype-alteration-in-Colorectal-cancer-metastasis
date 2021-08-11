@@ -127,7 +127,7 @@ clusters obtained in K-means clustering.
 
 ### Supplementary Analysis
 These scripts are basically doing pheripheral analysis of the data which 
-was done to explore various statistical and visulaization tools for
+are done to explore various statistical and visulaization tools for
 learning purpose.
 
 #### PCAplot_withWGDPandQarms.R
