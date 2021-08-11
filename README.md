@@ -1,6 +1,5 @@
 # Karyotype alteration in Colorectal cancer metastasis <img align="right" width="150" height="100" src=/images/Barts.jpg>
 
-
 The aim is to determine if the seeding of a primary colorectal cancer to a distant metastatic site results in specific karyotype adjustments that lead to adaptation to a new tissue-specific microenvironment.
 
 ## Description
@@ -125,6 +124,31 @@ which reveals whether the samples are whole genome doubled or not.
 #### MSI_status_script.R
 This script is calculating percentage of MSI and MSS samples in the five 
 clusters obtained in K-means clustering.
+
+### Supplementary Analysis
+These scripts are basically doing pheripheral analysis of the data which 
+was done to explore various statistical and visulaization tools for
+learning purpose.
+
+#### PCAplot_withWGDPandQarms.R
+This script is exploring genome doubled copy number calls with p and q arm
+annotation and performing principal component analysis. Renders PCA plot 
+using ggplot2.
+
+#### WGDcorrectedP&QarmPCAPlot_script.R
+This script is exploring genome doubling corrected copy number calls with
+p and q arm annotation and performing principal component analysis. Renders
+PCA plot using ggplot2.
+
+#### PQarmClusterPloidy_Script.R
+This script is performing clustering and creating dendograms to explore
+copy number calls according to P and Q arms.
+
+#### PQarmclusterwithoutWGD_script.R
+This script is correcting genome doubling to get underlying karyotypes and
+then calculates P and Q arms for each bin. Then it calculates mean of each 
+chromosome (arm wise) and performs clustering.
+
 
 
 
