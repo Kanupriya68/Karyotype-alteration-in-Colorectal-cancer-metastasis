@@ -11,8 +11,9 @@ PQ1 <- PQ1[-1,]
 
 #Import list of whole genome doubled samples
 wgd <- read.csv("C:/Research/Research_project/tcga/WGDsamplesAllData.csv",header = TRUE,sep = ";")
-
+wgd$sampleid <- gsub('-',".",wgd$sampleid)
 PQ1["sampleid"] <- rownames(PQ1)
+
 library(dplyr)
 test <- left_join(PQ1,wgd,by="sampleid")
 #Reoder
@@ -21,7 +22,7 @@ test1 <- test[,c(40,41,1:39)]
 library(tidyr)
 test1$WGD <- test1$WGD %>% replace_na("No") 
 samplesource <- c(rep("Hartwig Liver",327),rep("Hartwig Lung",27),rep("TCGA Liver",362),
-                  rep("TCGA Lung",950),rep("TCGA Colon",290))
+                  rep("TCGA Lung",950),rep("TCGA Colon",292))
 test1$SampleSource <- samplesource
 test2 <- test1 %>% relocate(SampleSource,.after=sampleid)
 test3 <- subset(test2,select = c(1,2))
@@ -73,6 +74,8 @@ legend("topright",legend=c("Hartwig Liver","Hartwig Lung","TCGA Liver","TCGA Lun
 #Create dataframe with X scores
 x <- cbind(PQ1,Xscores[,1:2])
 x$biopsysite <- c(rep("Hartwig Liver",327),rep("Hartwig Lung",27),rep("TCGA Liver",362),rep("TCGA Lung",950),rep("TCGA Colon",290))
+Wgdarray <- as.data.frame(Wgdarray)
+Wgdarray <- Wgdarray[-c(1958,1956),]
 x$WGD <- Wgdarray
 dfmain <- x[,c(40:43,1:39)]
 

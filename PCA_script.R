@@ -100,6 +100,8 @@ legend("topright",legend=c("Hartwig Liver","Hartwig Lung","TCGA Liver","TCGA Lun
 #PCAdataframe <- as.data.frame(PC1 = Xscores[,1],PC2 = Xscores[,2],biopsySite = biopsySite)
 
 WGD <- read.csv("C:/Research/Research_project/tcga/WGDsamplesAllData.csv",header = TRUE,sep = ";")
+#Replace "- with "." from primary sample IDs 
+WGD$sampleid <- gsub("-",".",WGD$sampleid)
 
 PCAdf["sampleid"] <- rownames(PCAdf)
 test <- left_join(PCAdf,WGD,by="sampleid")
@@ -112,7 +114,10 @@ WholeGenomeDoubling <- test1$WGD
 
 x <- cbind(PCAdf,Xscores[,1:2])
 x$biopsysite <- biopsySite
+WholeGenomeDoubling <- as.data.frame(WholeGenomeDoubling)
+WholeGenomeDoubling <- WholeGenomeDoubling[-c(1957,1958),]
 x$WGD <- WholeGenomeDoubling
+
 PCAdataframe <- x %>% relocate(c(biopsysite,PC1,PC2),.before="1")
 
 
