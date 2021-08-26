@@ -113,6 +113,10 @@ This script is performing Principal Component Analysis on combined copy
 number calls for primary as well as metastatic data. ggplot2 is used here
 to render PCA plots.
 
+#### PCAplot_withWGDPandQarms.R
+This script is exploring genome doubled copy number calls with p and q arm
+annotation and performing principal component analysis. Renders PCA plot 
+using ggplot2.
 
 #### K-means_script.R
 This script is performing K-means clustering on the combined copy number
@@ -129,11 +133,6 @@ clusters obtained in K-means clustering.
 These scripts are basically doing pheripheral analysis of the data which 
 are done to explore various statistical and visulaization tools for
 learning purpose.
-
-#### PCAplot_withWGDPandQarms.R
-This script is exploring genome doubled copy number calls with p and q arm
-annotation and performing principal component analysis. Renders PCA plot 
-using ggplot2.
 
 #### WGDcorrectedP&QarmPCAPlot_script.R
 This script is exploring genome doubling corrected copy number calls with
